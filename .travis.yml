@@ -1,10 +1,8 @@
 language: objective-c
 osx_image: xcode61
-rvm:
-- 2.1.2
-before_install:
-- chmod a+x ./Scripts/install.sh
-- chmod a+x ./Scripts/build.sh
+rvm use ruby-2.0.0-p0@routerscript
+rvm --create ruby-2.0.0-p0@routerscript
+rvm rvmrc to .ruby-version
 install:
 - ./Scripts/install.sh
 script:
