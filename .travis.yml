@@ -1,8 +1,8 @@
 language: objective-c
 osx_image: xcode61
-rvm use ruby-2.0.0-p0@routerscript
-rvm --create ruby-2.0.0-p0@routerscript
-rvm rvmrc to .ruby-version
+brew update
+rvm:
+- 2.1.2
 install:
 - ./Scripts/install.sh
 script:
