@@ -1,38 +1,37 @@
 #! /bin/sh
 
-# Example build script for Unity3D project. See the entire example: https://github.com/JonathanPorta/ci-build
+PROJECT_PATH=$(pwd)/$UNITY_PROJECT_PATH
+UNITY_BUILD_DIR=$(pwd)/Build
+LOG_FILE=$UNITY_BUILD_DIR/unity-win.log
 
-# Change this the name of your project. This will be the name of the final executables as well.
-project="2Dgameproject"
-echo "Attempting to build $project for Windows"
+
+ERROR_CODE=0
+echo "Items in project path ($project_path):"
+ls "$project_path"
+
+
+echo "Building project for Windows..."
+mkdir $UNITY_BUILD_DIR
 /Applications/Unity/Unity.app/Contents/MacOS/Unity \
   -batchmode \
   -nographics \
   -silent-crashes \
-  -logFile $(pwd)/unity.log \
-  -projectPath $(pwd) \
-  -buildWindowsPlayer "$(pwd)/Build/windows/$project.exe" \
-  -quit
+  -logFile \
+  -projectPath "$PROJECT_PATH" \
+  -buildWindows64Player  "$(pwd)/build/win/ci-build.exe" \
+  -quit \
+  | tee "$LOG_FILE"
+  
+if [ $? = 0 ] ; then
+  echo "Building Windows exe completed successfully."
+  ERROR_CODE=0
+else
+  echo "Building Windows exe failed. Exited with $?."
+  ERROR_CODE=1
+fi
 
-echo "Attempting to build $project for OS X"
-/Applications/Unity/Unity.app/Contents/MacOS/Unity \
-  -batchmode \
-  -nographics \
-  -silent-crashes \
-  -logFile $(pwd)/unity.log \
-  -projectPath $(pwd) \
-  -buildOSXUniversalPlayer "$(pwd)/Build/osx/$project.app" \
-  -quit
+#echo 'Build logs:'
+#cat $LOG_FILE
 
-echo "Attempting to build $project for Linux"
-/Applications/Unity/Unity.app/Contents/MacOS/Unity \
-  -batchmode \
-  -nographics \
-  -silent-crashes \
-  -logFile $(pwd)/unity.log \
-  -projectPath $(pwd) \
-  -buildLinuxUniversalPlayer "$(pwd)/Build/linux/$project.exe" \
-  -quit
-
-echo 'Logs from build'
-cat $(pwd)/unity.log
+echo "Finishing with code $ERROR_CODE"
+exit $ERROR_CODE
